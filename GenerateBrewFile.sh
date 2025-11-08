@@ -6,6 +6,21 @@ set -euo pipefail
 BREWFILE="${BREWFILE:-$HOME/Brewfile}"
 DESCRIBE="${DESCRIBE:-1}"
 QUIET="${QUIET:-0}"
+CLI_BREWFILE=""
+
+usage() {
+  cat <<'EOF'
+Usage: GenerateBrewFile.sh [options]
+
+Options:
+  -f, --brewfile <path>             Write the generated Brewfile to <path>.
+  -h, --help                        Show this help message and exit.
+
+Environment variables can still be used to configure behaviour. When both
+BREWFILE is set and --brewfile is supplied, the command-line option takes
+precedence.
+EOF
+}
 
 log() { [ "$QUIET" = "1" ] || echo "[$(date +'%H:%M:%S')] $*"; }
 
@@ -69,6 +84,48 @@ require() {
   echo "Error: '$1' is not installed or not on PATH." >&2
   exit 1
 }
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    -f|--brewfile)
+      if [ "$#" -lt 2 ]; then
+        echo "Error: $1 requires a path argument." >&2
+        usage >&2
+        exit 1
+      fi
+      CLI_BREWFILE="$2"
+      shift 2
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -*)
+      echo "Error: Unknown option: $1" >&2
+      usage >&2
+      exit 1
+      ;;
+    *)
+      echo "Error: Unexpected positional argument: $1" >&2
+      usage >&2
+      exit 1
+      ;;
+  esac
+done
+
+if [ "$#" -gt 0 ]; then
+  echo "Error: Unexpected positional arguments: $*" >&2
+  usage >&2
+  exit 1
+fi
+
+if [ -n "$CLI_BREWFILE" ]; then
+  BREWFILE="$CLI_BREWFILE"
+fi
 
 require brew
 require mas

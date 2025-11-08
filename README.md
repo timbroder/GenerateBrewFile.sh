@@ -39,10 +39,17 @@ From the repository root (or wherever the script lives), run:
 ./GenerateBrewFile.sh
 ```
 
-By default this writes `~/Brewfile`, includes descriptions when supported, and prints progress messages. The script will:
+By default this writes `~/Brewfile`, includes descriptions when supported, and prints progress messages. You can override the
+output location directly from the command line:
+
+```bash
+./GenerateBrewFile.sh --brewfile /path/to/custom.Brewfile
+```
+
+The script will then:
 
 0. Ensure that both `brew` and the `mas` CLI are available, installing them automatically when necessary.
-1. Require that `brew` exists, then run `brew bundle dump --force --file "$HOME/Brewfile" --describe`.
+1. Require that `brew` exists, then run `brew bundle dump --force --file "$BREWFILE" --describe`.
 2. If the `mas` CLI is installed and logged in, append your Mac App Store apps (`mas "Display Name", id: 123456789`).
 3. Scan `/Applications` and `~/Applications` for `.app` bundles that do not already appear in your MAS list, skip obvious Apple system apps, and try to match each bundle to a Homebrew cask token.
 4. Record suggested cask names (e.g., `#   cask "google-chrome"   # Google Chrome -> google-chrome`).
@@ -53,7 +60,7 @@ By default this writes `~/Brewfile`, includes descriptions when supported, and p
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `BREWFILE` | `$HOME/Brewfile` | Path to write the generated Brewfile. |
+| `BREWFILE` | `$HOME/Brewfile` | Path to write the generated Brewfile. Overridden by `--brewfile` when provided. |
 | `DESCRIBE` | `1` | When set to `1` (default) the script adds `--describe` so formulae/casks include the Homebrew description text. Set to `0` to omit descriptions. |
 | `QUIET` | `0` | Set to `1` to suppress log output (only errors will print). |
 
@@ -64,7 +71,7 @@ You can combine these for different scenarios:
 BREWFILE="$(pwd)/Brewfile" DESCRIBE=0 ./GenerateBrewFile.sh
 
 # Run silently and output to a custom path
-QUIET=1 BREWFILE="$HOME/Documents/work-mac.Brewfile" ./GenerateBrewFile.sh
+QUIET=1 ./GenerateBrewFile.sh --brewfile "$HOME/Documents/work-mac.Brewfile"
 ```
 
 ### Types of applications captured
