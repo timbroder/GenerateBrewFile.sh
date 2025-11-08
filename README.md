@@ -16,8 +16,8 @@ GenerateBrewFile.sh is a single-file Bash utility that builds a comprehensive `B
 | Requirement | Purpose |
 |-------------|---------|
 | macOS | The script depends on Homebrew and the macOS application bundle layout. |
-| [Homebrew](https://brew.sh/) | Provides the `brew` command used to dump your environment. |
-| [`mas` CLI](https://github.com/mas-cli/mas) (optional) | Enables the Mac App Store section; without it the script records that MAS apps were skipped. |
+| [Homebrew](https://brew.sh/) | Provides the `brew` command used to dump your environment. If `brew` is missing the script attempts a non-interactive installation and configures the current shell session to use it. |
+| [`mas` CLI](https://github.com/mas-cli/mas) (optional) | Enables the Mac App Store section; without it the script records that MAS apps were skipped. When `mas` is missing the script installs it with Homebrew before proceeding. |
 
 ## Installation
 
@@ -41,6 +41,7 @@ From the repository root (or wherever the script lives), run:
 
 By default this writes `~/Brewfile`, includes descriptions when supported, and prints progress messages. The script will:
 
+0. Ensure that both `brew` and the `mas` CLI are available, installing them automatically when necessary.
 1. Require that `brew` exists, then run `brew bundle dump --force --file "$HOME/Brewfile" --describe`.
 2. If the `mas` CLI is installed and logged in, append your Mac App Store apps (`mas "Display Name", id: 123456789`).
 3. Scan `/Applications` and `~/Applications` for `.app` bundles that do not already appear in your MAS list, skip obvious Apple system apps, and try to match each bundle to a Homebrew cask token.
