@@ -9,14 +9,69 @@ QUIET="${QUIET:-0}"
 
 log() { [ "$QUIET" = "1" ] || echo "[$(date +'%H:%M:%S')] $*"; }
 
-require() {
-  if ! command -v "$1" >/dev/null 2>&1; then
-    echo "Error: '$1' is not installed or not on PATH." >&2
+install_brew() {
+  log "Homebrew not found; attempting automatic installation ..."
+
+  if [ "$(uname -s)" != "Darwin" ]; then
+    echo "Error: Homebrew is required but automatic installation is only supported on macOS." >&2
     exit 1
   fi
+
+  if ! command -v curl >/dev/null 2>&1; then
+    echo "Error: Homebrew is required but 'curl' is not available to download the installer." >&2
+    exit 1
+  fi
+
+  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+  # Ensure the current shell session can locate the freshly installed brew
+  if [ -x /opt/homebrew/bin/brew ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [ -x /usr/local/bin/brew ]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  elif [ -x /usr/local/Homebrew/bin/brew ]; then
+    eval "$(/usr/local/Homebrew/bin/brew shellenv)"
+  fi
+
+  if ! command -v brew >/dev/null 2>&1; then
+    echo "Error: Homebrew installation did not succeed." >&2
+    exit 1
+  fi
+
+  log "Homebrew installation complete."
+}
+
+require() {
+  if command -v "$1" >/dev/null 2>&1; then
+    return 0
+  fi
+
+  case "$1" in
+    brew)
+      install_brew
+      return 0
+      ;;
+    mas)
+      require brew
+      log "'mas' CLI not found; installing via Homebrew ..."
+      if ! brew list mas >/dev/null 2>&1; then
+        brew install mas
+      fi
+      if command -v mas >/dev/null 2>&1; then
+        log "'mas' installation complete."
+        return 0
+      fi
+      echo "Error: Unable to install 'mas' via Homebrew." >&2
+      exit 1
+      ;;
+  esac
+
+  echo "Error: '$1' is not installed or not on PATH." >&2
+  exit 1
 }
 
 require brew
+require mas
 
 log "Dumping Homebrew formulae/casks/taps to $BREWFILE ..."
 dump_args=(bundle dump --force --file="$BREWFILE")
