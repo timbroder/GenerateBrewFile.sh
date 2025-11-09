@@ -3,6 +3,8 @@ set -euo pipefail
 
 # macOS/Bash 3.2 compatible; no 'mapfile'
 
+readonly VERSION="0.1.0"
+
 BREWFILE="${BREWFILE:-$HOME/Brewfile}"
 DESCRIBE="${DESCRIBE:-1}"
 QUIET="${QUIET:-0}"
@@ -15,6 +17,7 @@ Usage: GenerateBrewFile.sh [options]
 Options:
   -f, --brewfile <path>             Write the generated Brewfile to <path>.
   -h, --help                        Show this help message and exit.
+  -V, --version                     Print the GenerateBrewFile.sh version and exit.
 
 Environment variables can still be used to configure behaviour. When both
 BREWFILE is set and --brewfile is supplied, the command-line option takes
@@ -98,6 +101,10 @@ while [ "$#" -gt 0 ]; do
       ;;
     -h|--help)
       usage
+      exit 0
+      ;;
+    -V|--version)
+      echo "GenerateBrewFile.sh ${VERSION}"
       exit 0
       ;;
     --)
