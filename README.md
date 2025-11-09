@@ -21,15 +21,35 @@ GenerateBrewFile.sh is a single-file Bash utility that builds a comprehensive `B
 
 ## Installation
 
+### Quick install (recommended)
+
+Install the latest version straight from GitHub into a writable directory on your `$PATH`:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/timbroder/GenerateBrewFile.sh/main/install.sh | \
+  bash -s -- --repo timbroder/GenerateBrewFile.sh
+```
+
+You can customize the destination by passing `--install-dir /custom/path` or pin to a specific branch/tag with `--branch`. The
+installer will place an executable `GenerateBrewFile.sh` in the chosen directory.
+
+### Manual install
+
 Clone the repository (or copy the script) and make it executable:
 
 ```bash
-git clone https://github.com/<your-org>/GenerateBrewFile.sh.git
+git clone https://github.com/timbroder/GenerateBrewFile.sh.git
 cd GenerateBrewFile.sh
 chmod +x GenerateBrewFile.sh
 ```
 
-You can now run the script directly or move it somewhere on your `$PATH` (for example `~/bin`).
+With a local checkout you can also run the installer script:
+
+```bash
+./install.sh --install-dir /usr/local/bin
+```
+
+After installation you can run the script directly or move it somewhere on your `$PATH` (for example `~/bin`).
 
 ## Usage
 
