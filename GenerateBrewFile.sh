@@ -3,7 +3,7 @@ set -euo pipefail
 
 # macOS/Bash 3.2 compatible; no 'mapfile'
 
-readonly VERSION="0.1.1"
+readonly VERSION="0.1.2"
 
 BREWFILE="${BREWFILE:-$HOME/Brewfile}"
 DESCRIBE="${DESCRIBE:-1}"
@@ -169,28 +169,31 @@ if command -v mas >/dev/null 2>&1; then
   if mas account 2>/dev/null | grep -q "@"; then
     MAS_AVAILABLE=1
     log "Appending Mac App Store apps (mas list) ..."
+    mas_output="$(mas list)"
     {
       echo
       echo "# ------------------------------"
       echo "# Mac App Store apps (via mas)"
       echo "# ------------------------------"
-      mas list | format_mas_entries
+      printf '%s\n' "$mas_output" | format_mas_entries
     } >> "$BREWFILE"
 
     # capture MAS app names (for skip logic)
+    mas_names_output="$(printf '%s\n' "$mas_output" | extract_mas_names)"
     while IFS= read -r n; do
       [ -n "$n" ] && MAS_NAMES+=("$n")
-    done < <(mas list | extract_mas_names)
+    done <<<"$mas_names_output"
   else
     log "Warning: Could not verify MAS login, but continuing since mas list works."
     MAS_AVAILABLE=1
     # fallback — still add mas apps
+    mas_output="$(mas list)"
     {
       echo
       echo "# ------------------------------"
       echo "# Mac App Store apps (via mas)"
       echo "# ------------------------------"
-      mas list | format_mas_entries
+      printf '%s\n' "$mas_output" | format_mas_entries
     } >> "$BREWFILE"
   fi
 else
