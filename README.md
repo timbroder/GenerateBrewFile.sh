@@ -21,10 +21,45 @@ GenerateBrewFile.sh is a single-file Bash utility that builds a comprehensive `B
 
 ## Installation
 
+### Homebrew (Homebrew/homebrew-core)
+
+GenerateBrewFile.sh is published in the main Homebrew tap starting with
+version `0.1.0`. Install or upgrade it like any other core formula (release
+notes live on the [v0.1.0 GitHub tag](https://github.com/timbroder/GenerateBrewFile.sh/releases/tag/v0.1.0)):
+
+```bash
+brew install generate-brewfile
+# or
+brew upgrade generate-brewfile
+```
+
+The formula bundles the `GenerateBrewFile.sh` script as the `generate-brewfile`
+CLI. It includes an automated `brew test` that exercises the `--help` and
+`--version` flags to keep parity with the upstream release process.
+
+#### Installing HEAD builds
+
+If you would like to track the latest commits between tagged releases you can
+use Homebrew's `--HEAD` flag:
+
+```bash
+brew install --HEAD generate-brewfile
+```
+
+Homebrew will clone the Git repository directly and build the CLI from the
+current `main` branch.
+
+> **Note:** Homebrew/homebrew-core accepts projects maintained by
+> individuals. The formula points to the canonical repository under the
+> [`timbroder`](https://github.com/timbroder) account—no GitHub organization is
+> required as long as the tagged release and checksum remain stable.
+
+### Manual installation
+
 Clone the repository (or copy the script) and make it executable:
 
 ```bash
-git clone https://github.com/<your-org>/GenerateBrewFile.sh.git
+git clone https://github.com/timbroder/GenerateBrewFile.sh.git
 cd GenerateBrewFile.sh
 chmod +x GenerateBrewFile.sh
 ```
@@ -44,6 +79,12 @@ output location directly from the command line:
 
 ```bash
 ./GenerateBrewFile.sh --brewfile /path/to/custom.Brewfile
+```
+
+To confirm which release is installed, run:
+
+```bash
+./GenerateBrewFile.sh --version
 ```
 
 The script will then:
