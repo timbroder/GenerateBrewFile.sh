@@ -1,8 +1,9 @@
 class GenerateBrewfile < Formula
   desc "Generate a comprehensive Brewfile with Homebrew, MAS, and .app metadata"
   homepage "https://github.com/timbroder/GenerateBrewFile.sh"
-  url "https://github.com/timbroder/GenerateBrewFile.sh/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "44dbe3327dbe45c17940109eeaff0fc9fb2619984e45f4e76a8403ea9b393b98"
+  url "https://raw.githubusercontent.com/timbroder/GenerateBrewFile.sh/main/GenerateBrewFile.sh", using: :nounzip
+  version "0.1.0"
+  sha256 "4def1d908011dfd9d5da1f4a105100947ed66dc5feb8826807e228160e1c794b"
   license "MIT"
   head "https://github.com/timbroder/GenerateBrewFile.sh.git", branch: "main"
 
