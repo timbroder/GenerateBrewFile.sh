@@ -24,8 +24,8 @@ GenerateBrewFile.sh is a single-file Bash utility that builds a comprehensive `B
 ### Homebrew (Homebrew/homebrew-core)
 
 GenerateBrewFile.sh is published in the main Homebrew tap starting with
-version `0.1.0`. Install or upgrade it like any other core formula (release
-notes live on the [v0.1.0 GitHub tag](https://github.com/timbroder/GenerateBrewFile.sh/releases/tag/v0.1.0)):
+version `0.1.1`. Install or upgrade it like any other core formula (release
+notes live on the [v0.1.1 GitHub tag](https://github.com/timbroder/GenerateBrewFile.sh/releases/tag/v0.1.1)):
 
 ```bash
 brew install generate-brewfile
