@@ -27,6 +27,26 @@ EOF
 
 log() { [ "$QUIET" = "1" ] || echo "[$(date +'%H:%M:%S')] $*"; }
 
+format_mas_entries() {
+  awk '{
+    id = $1;
+    $1 = "";
+    sub(/^[[:space:]]+/, "");
+    sub(/[[:space:]]+\([^()]+\)$/, "");
+    gsub(/"/, "\\\"");
+    printf "mas \"%s\", id: %s\n", $0, id;
+  }'
+}
+
+extract_mas_names() {
+  awk '{
+    $1 = "";
+    sub(/^[[:space:]]+/, "");
+    sub(/[[:space:]]+\([^()]+\)$/, "");
+    print;
+  }'
+}
+
 install_brew() {
   log "Homebrew not found; attempting automatic installation ..."
 
@@ -154,13 +174,13 @@ if command -v mas >/dev/null 2>&1; then
       echo "# ------------------------------"
       echo "# Mac App Store apps (via mas)"
       echo "# ------------------------------"
-      mas list | sed -E 's/^([0-9]+) (.+) \(.+\)$/mas \"\2\", id: \1/'
+      mas list | format_mas_entries
     } >> "$BREWFILE"
 
     # capture MAS app names (for skip logic)
     while IFS= read -r n; do
       [ -n "$n" ] && MAS_NAMES+=("$n")
-    done < <(mas list | sed -E 's/^[0-9]+ (.+) \(.+\)$/\1/')
+    done < <(mas list | extract_mas_names)
   else
     log "Warning: Could not verify MAS login, but continuing since mas list works."
     MAS_AVAILABLE=1
@@ -170,7 +190,7 @@ if command -v mas >/dev/null 2>&1; then
       echo "# ------------------------------"
       echo "# Mac App Store apps (via mas)"
       echo "# ------------------------------"
-      mas list | sed -E 's/^([0-9]+) (.+) \(.+\)$/mas \"\2\", id: \1/'
+      mas list | format_mas_entries
     } >> "$BREWFILE"
   fi
 else
